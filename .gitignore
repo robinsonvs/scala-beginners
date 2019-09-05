@@ -21,3 +21,5 @@ project/
 
 .idea
 idea/
+
+.attach_*
