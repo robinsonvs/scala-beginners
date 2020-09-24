@@ -43,7 +43,7 @@ object MethodNotations extends App {
 
   // postfix notation
   println(mary.isAlive)
-  println(mary isAlive)
+  //println(mary isAlive)
 
   // apply
   println(mary.apply())
@@ -67,7 +67,7 @@ object MethodNotations extends App {
 
   println((mary + "the rockstar").apply()) // 1
   println((+mary).age) // 2
-  println(mary learnsScala) // 3
+  //println(mary learnsScala) // 3
   println(mary(10)) // 4
 
 }

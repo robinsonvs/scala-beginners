@@ -4,7 +4,7 @@ object AbstractDataTypes extends App {
 
   // abstract
   abstract class Animal {
-    val creatureType: String
+    val creatureType: String = "wild"
     def eat: Unit
   }
 
@@ -21,12 +21,13 @@ object AbstractDataTypes extends App {
   // traits
   trait Carnivore {
     def eat(animal: Animal): Unit
+    val preferredMeal: String = "fresh meat"
   }
 
   trait ColdBlooded
 
   class Crocodile extends Animal with Carnivore with ColdBlooded {
-    val creatureType: String = "croc"
+    override val creatureType: String = "croc"
     def eat: Unit = println("nomnomnom")
     def eat(animal: Animal): Unit = println(s"I'm a croc and I'm eating ${animal.creatureType}")
   }

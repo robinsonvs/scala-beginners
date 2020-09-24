@@ -2,12 +2,13 @@ package lectures.part2oop
 
 object Inheritance extends App {
 
-  class Animal {
+  // single class inheritance
+  sealed class Animal {
     val creatureType = "wild"
     def eat = println("nomnom")
   }
 
-  class Cat extends Animal {
+  class Cat extends Animal{
     def crunch = {
       eat
       println("crunch crunch")
@@ -17,7 +18,7 @@ object Inheritance extends App {
   val cat = new Cat
   cat.crunch
 
-  //constructors
+  // constructors
   class Person(name: String, age: Int) {
     def this(name: String) = this(name, 0)
   }
@@ -25,27 +26,28 @@ object Inheritance extends App {
 
   // overriding
   class Dog(override val creatureType: String) extends Animal {
-    //override val creatureType = "domestic"
+    //override val creatureType = "Domestic"
     override def eat = {
       super.eat
       println("crunch, crunch")
     }
   }
+
   val dog = new Dog("K9")
   dog.eat
   println(dog.creatureType)
 
-  // Type substitution (broad: polymorphism)
+  //type substitution (broad: polymorfism)
   val unknownAnimal: Animal = new Dog("K9")
   unknownAnimal.eat
 
-  // overRIDING vs overLOADING
+  //overRIDING vs overLOADING
 
-  // super
+  //super
 
-  // preventing overrides
-  // 1 - use final on member
-  // 2 - use final on the entire class
-  // 3 - seal the class = extend classes in THIS FILE, prevent extension in other files
+  //preventing overrides
+  //1 - use final on member
+  //2 - use final on the entire class
+  //3 - seal the class - extend classes in THIS FILE, prevent extension in other files
 
 }

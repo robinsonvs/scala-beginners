@@ -32,4 +32,5 @@ object Objects extends App {
 
   // Scala Applications = Scala object with
   // def main(args: Array[String]): Unit
+
 }
