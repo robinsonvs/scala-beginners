@@ -130,18 +130,12 @@ object ListGenericTest extends App {
   println(listOfIntegers.toString)
   println(listOfStrings.toString)
 
-  println(listOfIntegers.map(new Function1[Int, Int] {
-    override def apply(elem: Int): Int = elem * 2
-  }).toString)
+  println(listOfIntegers.map(_ * 2).toString)
 
-  println(listOfIntegers.filter(new Function1[Int, Boolean] {
-    override def apply(elem: Int): Boolean = elem % 2 == 0
-  }).toString)
+  println(listOfIntegers.filter(_ % 2 == 0).toString)
 
   println((listOfIntegers ++ anotherListOfIntegers).toString)
-  println(listOfIntegers.flatMap(new Function1[Int, MyListGeneric[Int]] {
-    override def apply(elem: Int): MyListGeneric[Int] = new ConsGeneric(elem, new ConsGeneric(elem + 1, EmptyGeneric))
-  }).toString)
+  println(listOfIntegers.flatMap(elem => new ConsGeneric(elem, new ConsGeneric(elem + 1, EmptyGeneric))).toString)
 
   println(closeListOfIntegers == listOfIntegers)
 }
