@@ -24,6 +24,12 @@ abstract class MyListGeneric[+A] {
 
   //concatenation
   def ++[B >: A](list: MyListGeneric[B]): MyListGeneric[B]
+
+  //hofs
+  def foreach(f: A => Unit): Unit
+  def sort(compare: (A, A) => Int): MyListGeneric[A]
+  def zipWith[B, C](list: MyListGeneric[B], zip: (A, B) => C): MyListGeneric[C]
+  def fold[B](start: B)(operator: (B, A) => B): B
 }
 
 case object EmptyGeneric extends MyListGeneric[Nothing] {
@@ -38,6 +44,15 @@ case object EmptyGeneric extends MyListGeneric[Nothing] {
   def filter(predicate: Nothing => Boolean): MyListGeneric[Nothing] = EmptyGeneric
 
   def ++[B >: Nothing](list: MyListGeneric[B]): MyListGeneric[B] = list
+
+  def foreach(f: Nothing => Unit): Unit = ()
+  def sort(compare: (Nothing, Nothing) => Int) = EmptyGeneric
+
+  def zipWith[B, C](list: MyListGeneric[B], zip: (Nothing, B) => C): MyListGeneric[C] =
+    if (!list.isEmpty) throw new RuntimeException("Lists do not have the same length")
+    else EmptyGeneric
+
+  def fold[B](start: B)(operator: (B, Nothing) => B): B = start
 }
 
 case class ConsGeneric[+A](h: A, t: MyListGeneric[A]) extends MyListGeneric[A] {
@@ -88,6 +103,37 @@ case class ConsGeneric[+A](h: A, t: MyListGeneric[A]) extends MyListGeneric[A] {
   def flatMap[B](transformer: A => MyListGeneric[B]): MyListGeneric[B] =
     transformer(h) ++ t.flatMap(transformer)
 
+  //hofs
+  def foreach(f: A => Unit): Unit = {
+    f(h)
+    t.foreach(f)
+  }
+
+  def sort(compare: (A, A) => Int): MyListGeneric[A] = {
+    def insert(x: A, sortedList: MyListGeneric[A]): MyListGeneric[A] =
+      if (sortedList.isEmpty) new ConsGeneric(x, EmptyGeneric)
+      else if (compare(x, sortedList.head) <= 0) new ConsGeneric(x, sortedList)
+      else new ConsGeneric(sortedList.head, insert(x, sortedList.tail))
+
+    val sortedTail = t.sort(compare)
+    insert(h, sortedTail)
+  }
+
+  def zipWith[B, C](list: MyListGeneric[B], zip: (A, B) => C): MyListGeneric[C] =
+    if (list.isEmpty) throw new RuntimeException("Lists do not have the same length")
+    else new ConsGeneric(zip(h, list.head), t.zipWith(list.tail, zip))
+
+
+  /*
+    [1,2,3].fold(0)(+) =
+    = [2,3].fold(1)(+) =
+    = [3].fold(3)(+) =
+    = [].fold(6)(+)
+    = 6
+   */
+  def fold[B](start: B)(operator: (B, A) => B): B = {
+    t.fold(operator(start, h))(operator)
+  }
 }
 
 //trait Mypredicate[-T] { // T => Boolean
@@ -138,4 +184,9 @@ object ListGenericTest extends App {
   println(listOfIntegers.flatMap(elem => new ConsGeneric(elem, new ConsGeneric(elem + 1, EmptyGeneric))).toString)
 
   println(closeListOfIntegers == listOfIntegers)
+
+  listOfIntegers.foreach(println)
+  println(listOfIntegers.sort((x, y) => y - x))
+  println(anotherListOfIntegers.zipWith[String, String](listOfStrings, _ + "-" + _))
+  println(listOfIntegers.fold((0))(_ + _))
 }
